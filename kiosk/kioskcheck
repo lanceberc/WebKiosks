@@ -39,7 +39,12 @@ def kioskCheck():
     except:
         currentURL = defaultURL;
 
-    single = urllib.request.urlopen(kiosksURL).read().decode('utf-8')
+    try:
+        single = urllib.request.urlopen(kiosksURL).read().decode('utf-8')
+    except urllib.error.URLError as e:
+        print(f"urllib error: {e}")
+        return;
+
     double = single.replace("'", '"')
     kiosks = json.loads(double)
 
@@ -52,16 +57,11 @@ def kioskCheck():
     if urlString != currentURL:
         # shoot firefox, let nanny restart it
         try:
-            result= subprocess.run(['pidof', 'firefox'], capture_output=True, text=True, check=True)
-            pids = result.stdout.split()
-        except:
-            pids = []
+            print("kioskcheck killing firefox")
+            result = subprocess.run(['killall', 'firefox'], capture_output=True, text=True, check=True)
+        except subprocess.CalledProcessError as e:
+            print("killall failed: %r" % (e.output))
 
-        pids.sort()
-        if len(pids) > 0:
-            print("kioskcheck killing process %r" % (pids[0]))
-            result= subprocess.run(['kill', pids[0]], capture_output=True, text=True, check=True)
-        
         with open(kioskCurrent, 'w') as f:
             f.write(urlString)
         print("kioskcheck new url %r" % (url))
