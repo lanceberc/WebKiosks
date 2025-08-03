@@ -60,6 +60,12 @@ Then make it executable with `chmod +x ~/.config/autostart/kiosk.desktop`
 	systemctl enable kioskcheck.service
 	systemctl start kioskcheck
 
+**Restart firefox daily**
+
+Using `crontab -e` add this to kill firefox at 3am
+
+      0 3 * * * /usr/bin/killall firefox
+
 **Customize the kiosk instance**
 
 Edit ~/bin/{kiosk-config.url, kiosk.role}
