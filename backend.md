@@ -5,10 +5,13 @@ The backend implements the web app, serving up an authenticated configuration pa
 ## **TL;DR**
 
 It's pretty finicky - there are a lot of moving parts to get right:
+
 **nginx**
+
 Add the `nginx` configuration block to `/etc/nginx/sites-available/default`
 
  **wsgi backend**
+ 
 `cp backend/Kiosks.json /var/www/html`
 (if needed) `mkdir ~/bin`
 `cp backend/kiosks_wsgi.* ~/bin`
@@ -18,12 +21,14 @@ Add the `nginx` configuration block to `/etc/nginx/sites-available/default`
 `cp frontend/* /var/www/html/Kiosks`
 
 **Daemon Restart**
+
 `sudo systemctl demon-reload`
 `sudo systemctl enable kiosks_wsgi`
 `systemctl start kiosks_wsgi`
 `sudo systemctl restart nginx`
  
 **Test**
+
 Check that the backend is running `sudo systemctl status kiosks_wsgi`
 Create a user with `sudo htpasswd -c /etc/nginx/stfycusers.txt <user>`
 Browse to `http://<host>/Kiosks/kiosks.html`
