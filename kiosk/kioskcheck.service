@@ -1,0 +1,12 @@
+[Unit]
+Description=Kiosks configuration change monitor
+
+[Service]
+Type=simple
+WorkingDirectory=/home/stfyc/bin
+ExecStart=/usr/bin/python /home/stfyc/bin/kioskcheck
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=graphical.target

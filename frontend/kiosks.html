@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./kiosks.css">
+    <script src="date.format.js"></script>
+    <script type="module" src="kiosks.js"></script>
+  <head>
+  </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StFYC Race Kiosk Configuration</title>
+  </head>
+  <body>
+    <div>
+      <div class="header">
+	<div id="clock" class="clock">00:00</div>
+	<span class="title">StFYC Race Kiosk Configuration</span>
+	<span class="burgee-container">
+	  <div class="burgee-right"><img src="stfyc-burgee2.svg"></div>
+	</span>
+      </div>
+      <div id="scenes" class="scene">
+	<table id="scenesTable" class="scenesTable">
+	  <thead>
+	    <tr>
+	      <th></th>
+	      <th>Scene</th>
+	      <th>URL</th>
+	    </tr>
+	  </thead>
+	  <tbody id="scenesBody" class="scenesBody">
+	  </tbody>
+	</table>
+      </div>
+      <div id="roles" class="roles">
+	<table id="rolesTable" class="rolesTable">
+	  <thead>
+	    <tr>
+	      <th></th>
+	      <th>Role</th>
+	      <th>Scene</th>
+	    </tr>
+	  </thead>
+	  <tbody id="rolesBody" class="rolesBody">
+	  </tbody>
+	</table>
+      </div>
+      <div id="footer" class="footer">
+      </div>
+    </div>
+    <dialog id="dialog" class="modal modalCenter"></dialog>
+  </body>
+</html>

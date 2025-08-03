@@ -1,0 +1,143 @@
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --main-background-color: #14365D; /* Night Moon */
+    --main-foreground-color: white;
+	  
+    --rebeccapurple: rebeccapurple;
+
+    --dark-grey: #404040;
+    --dark: black;
+    --light: white;
+    
+    --atsea: #223366;    /* 225 67 40 HSV */
+    --onshore: #226622;  /* 120 67 40 HSV */
+    --unknown: #cc43cc;  /* 300 67 80 HSV */
+    --status: #442266;   /* rebecca purple HSV w/ 40% V */
+    --checking: #665522; /* 45 67 40 HSV */
+}
+      
+html {
+    font-size: min(4.5vw, 2.25vh); /* rem sizes are based off this - 0.5 font aspect ratio */
+}
+
+body {
+    background-color: var(--main-background-color);
+    color: var(--main-foreground-color);
+    font-family: Arial;
+}
+
+table {
+    padding: 0.2rem;
+    margin: 0.5rem;
+    border-radius: 1rem;
+    border-style: solid;
+}
+
+th {
+    border-bottom: thin solid var(--main-foreground-color);
+}
+
+/* Override the system style sheet for button and input elements
+/* https://css-tricks.com/overriding-default-button-styles/
+ */
+button {
+    font-family: inherit;
+    font-size: 100%;
+    margin: 0.1rem;
+}
+
+input {
+    font-family: inherit;
+    font-size: 100%;
+    width: 100%;
+    margin: 0.1rem;
+}
+
+.header {
+    display: grid;
+    grid-template-columns: 10% 1fr 10%;
+    align-items: center;
+}
+
+.clock {
+    font-size: 1.5rem;
+    justify-self: left;
+}
+
+.title {
+    font-size: 2rem;
+    justify-self: center;
+}
+
+.burgee-container {
+    aspect-ratio: 100/60.77;
+    /*width: 100%;*/
+    max-height: 5rem;
+    margin: 0.2rem;
+}
+
+.burgee-right {
+    display: inline-flex;
+    width: 90%; /* needed by Safari */
+    height: 90%; /* needed by Safari */
+    max-height: 5rem;
+    justify-content: right;
+}
+
+.modalConfirm {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+}
+
+.Cancel {
+    justify-self: left;
+}
+
+.OK {
+    justify-self: right;
+}
+
+.changeRole {
+    display: grid;
+    justify-items: left;
+}
+
+.changeScene {
+    display: grid;
+    justify-items: left;
+    width: 100%;
+}
+
+.roleTable {
+    text-align: left;
+    border: none;
+}
+
+.footer {
+    font-size: 1.5rem;
+}
+
+.modal {
+  margin: 0; /* allows placing relative to upper left */
+  z-index: 1; /* Sit on top */
+  padding: 1rem;
+  inset-inline-start: 100px;
+  overflow:auto;
+  color: var(--main-foreground-color);
+  background-color: var(--dark-grey);
+  text-align: center;
+  border-radius: 1rem;
+  border-style: double;
+  width: 90%;
+}
+
+.modalCenter {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}

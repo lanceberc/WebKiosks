@@ -1,0 +1,13 @@
+[Unit]
+Description=Kiosks data backend
+After=nginx
+Wants=nginx
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python /home/stfyc/bin/kiosks_wsgi.py
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

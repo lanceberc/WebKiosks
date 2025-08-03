@@ -1,0 +1,16 @@
+#!/usr/bin/bash
+DEBUG=~/bin/kiosknanny.log
+echo `date` Start >> ${DEBUG}
+ifconfig | grep 'inet ' | grep -v 127 | awk '{print $2}' >> ${DEBUG}
+DISPLAY=:0 unclutter &
+xset -display :0 -dpms
+xset -display :0 s noblank
+xset -display :0 s off
+while [ 1 -eq 1 ]
+do
+    echo `date` Sleeping >> ${DEBUG}
+    sleep 60
+    source ~/bin/kiosk-current.url
+    echo `date` Starting firefox with url ${URL} >> ${DEBUG}
+    DISPLAY=:0 firefox -width 1920 -height 1080 -kiosk ${URL}
+done
