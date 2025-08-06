@@ -18,6 +18,13 @@ Offline:
 
 	sudo nmcli connection add type wifi wifi.ssid 'St. Francis Yacht Club' wifi-sec.key-mgmt wpa-psk wifi-sec.psk <password>
 
+**Disable avahi**
+
+`avahi` is a discovery service that's not needed on the kiosk systems and has a bug that fills the system log files in some IPv6 environments.
+
+      sudo systemctl stop avahi-daemon
+      sudo systemctl disable avahi-daemon
+
 **Remove unused packages then update system**
 
 	sudo apt-get remove --purge cups chromium cups-browsed cups-client cups-common cups-core-drivers cups-daemon cups-filters cups-filters-core-drivers cups-server-common cups-ipp-utils cups-pk-helper libcamera-ipa libcamera-tools libcamera0.3
@@ -26,6 +33,12 @@ Offline:
 	sudo apt-get full-upgrade
 
 In `raspi-config` under `Advanced Settings` switch to X. Optionally disable the splash screen.
+
+**Get the kiosk scripts**
+      mkdir ~/src; cd ~/src; git clone https://github.com/lanceberc/WebKiosks
+      cd WebKiosks
+      mkdir ~/bin
+      cp -p kiosk/* ~/bin
 
 **Configure Firefox**
 
@@ -37,12 +50,10 @@ Fireup Firefox and disable the sidebar and reloading windows upon reboot. Disabl
 
 **Configure Kiosk**
 
-	mkdir ~/bin
-	cp -p kiosk/* ~/bin
 
 Autostart notes from the [Raspberry Pi forums](https://forums.raspberrypi.com/viewtopic.php?t=294014)
 
-	mkdir ~/config/autostart
+	mkdir -p ~/config/autostart
 	
 Put this in `~/.config/autostart/kiosk.desktop`
 
@@ -53,9 +64,12 @@ Put this in `~/.config/autostart/kiosk.desktop`
 
 Then make it executable with `chmod +x ~/.config/autostart/kiosk.desktop`
 
+**Customize the kiosk instance**
+
+Edit ~/bin/{kiosk-config.url, kiosk.role}
 **Configure the kioskcheck service**
 
-	bash
+	sudo bash
 	(cd /etc/systemd/system ; ln -s /home/stfyc/bin/kioskcheck.service .)
 	systemctl enable kioskcheck.service
 	systemctl start kioskcheck
@@ -65,7 +79,4 @@ Then make it executable with `chmod +x ~/.config/autostart/kiosk.desktop`
 Using `crontab -e` add this to kill firefox at 3am
 
       0 3 * * * /usr/bin/killall firefox
-
-**Customize the kiosk instance**
-
-Edit ~/bin/{kiosk-config.url, kiosk.role}
+      2 3 * * * /usr/bin/killall crashhelper
