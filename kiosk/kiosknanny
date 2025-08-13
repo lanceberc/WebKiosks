@@ -2,10 +2,13 @@
 DEBUG=~/bin/kiosknanny.log
 echo `date` Start >> ${DEBUG}
 ifconfig | grep 'inet ' | grep -v 127 | awk '{print $2}' >> ${DEBUG}
+# Need to find a Wayland replacement for unclutter
 DISPLAY=:0 unclutter &
 xset -display :0 -dpms
 xset -display :0 s noblank
 xset -display :0 s off
+# wlr-randr sets Wayland's resolution
+wlr-randr --output HDMI-A-1 --mode 1920x1080
 while [ 1 -eq 1 ]
 do
     echo `date` Sleeping >> ${DEBUG}
