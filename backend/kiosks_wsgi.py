@@ -7,7 +7,7 @@ import urllib
 import logging
 import pprint
 
-kioskConfig = "/var/www/html/Kiosks.json"
+kioskConfig = "/home/stfyc/www/html/Kiosks.json"
 
 port = 8000
 
@@ -43,6 +43,13 @@ def application(environ, start_response):
     A simple WSGI application that returns the kiosks collection in a JSON-encoded string.
     """
 
+    # Reread the config file in case it's been manually edited
+    with open(kioskConfig, "r") as f:
+        # the pretty printer uses single quotes, JSON requires double quotes
+        single = f.read()
+        double = single.replace("'", '"')
+        kiosks = json.loads(double)
+
     req = wsgiref.util.request_uri(environ)
 
     """
@@ -55,6 +62,7 @@ def application(environ, start_response):
     print("parsed request: %r" % (p,))
     q = urllib.parse.parse_qs(p.query)
     print("query: %r" % (q,))
+
 
     if ("changeRole" in q) and ("Scene" in q):
         changingRole = q["changeRole"][0];
@@ -69,7 +77,7 @@ def application(environ, start_response):
         
     if ("changeScene" in q) and ("URL" in q):
         changingScene = q["changeScene"][0];
-        newURL = q["URL"][0];
+        newURL = q["URL"][0].strip();
         if changingScene in kiosks["Scenes"]:
             print("Changing Scene %r to %r" % (changingScene, newURL))
             kiosks["Scenes"][changingScene] = newURL;
@@ -105,6 +113,7 @@ def application(environ, start_response):
     return [ ret ]
 
 if __name__ == '__main__':
+    """
     with open(kioskConfig, "r") as f:
         # the pretty printer uses single quotes, JSON requires double quotes
         single = f.read()
@@ -116,9 +125,11 @@ if __name__ == '__main__':
     #with make_server('127.0.0.1', port, application) as httpd:
 
     print("Initial kiosks %r" % (kiosks))
+    """
 
     logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.DEBUG)
-               
+
+    # Using the validator isn't strictly necessary and is a little slower, but so what?
     vapp = wsgiref.validate.validator(application)
     
     with make_server('127.0.0.1', port, vapp) as httpd:

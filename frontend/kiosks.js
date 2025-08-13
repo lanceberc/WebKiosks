@@ -15,7 +15,7 @@ function changeScene(ev) {
     function confirm(e) {
 	const el = e.target;
 
-	newURL = document.getElementById("newURL").value;
+	newURL = document.getElementById("newURL").value.trim();
 	
 	if (el.innerHTML == "OK" && newURL != "") {
 	    // Need to url encode
