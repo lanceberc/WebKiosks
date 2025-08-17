@@ -6,6 +6,7 @@ import json
 import urllib
 import logging
 import pprint
+import subprocess
 
 kioskConfig = "/home/stfyc/www/html/Kiosks.json"
 
@@ -42,74 +43,65 @@ def application(environ, start_response):
     """
     A simple WSGI application that returns the kiosks collection in a JSON-encoded string.
     """
-
-    # Reread the config file in case it's been manually edited
-    with open(kioskConfig, "r") as f:
-        # the pretty printer uses single quotes, JSON requires double quotes
-        single = f.read()
-        double = single.replace("'", '"')
-        kiosks = json.loads(double)
-
     req = wsgiref.util.request_uri(environ)
 
-    """
-    for key, value in environ.items():
-        print("env %8s: %s" % (key, environ[key]))
-    """
-
-    dreq = urllib.parse.unquote(req)
-    p = urllib.parse.urlparse(dreq)
-    print("parsed request: %r" % (p,))
-    q = urllib.parse.parse_qs(p.query)
-    print("query: %r" % (q,))
-
-
-    if ("changeRole" in q) and ("Scene" in q):
-        changingRole = q["changeRole"][0];
-        newScene = q["Scene"][0];
-        if (changingRole in kiosks["Roles"]) and (newScene in kiosks["Scenes"]):
-            print("Changing role '%r' to '%r'" % (changingRole, newScene))
-            kiosks["Roles"][changingRole] = newScene;
-        else:
-            print("Couldn't change Role %r to %r" % (changingRole, newScene))
-    else:
-        print('"changeRole" in q: %r "Scene" in q: %r' % ("changeRole" in q, "Scene" in q))
+    parsed = urllib.parse.urlparse(req)
+    path = parsed.path
+    print("Path %s" % (path));
+    if path.endswith("scrollprep.html"):
+        url = parsed.query
+        print("Getting height of %s" % (url));
+        result = subprocess.run(["node", "/home/stfyc/src/Results/getheight.js", url])
+        ret = bytes(json.dumps("{}"), "utf-8");
         
-    if ("changeScene" in q) and ("URL" in q):
-        changingScene = q["changeScene"][0];
-        newURL = q["URL"][0].strip();
-        if changingScene in kiosks["Scenes"]:
-            print("Changing Scene %r to %r" % (changingScene, newURL))
-            kiosks["Scenes"][changingScene] = newURL;
+    if path.endswith("kiosks.html"):
+        dreq = urllib.parse.unquote(req)
+        p = urllib.parse.urlparse(dreq)
+        print("parsed request: %r" % (p,))
+        q = urllib.parse.parse_qs(p.query)
+        print("query: %r" % (q,))
+        
+        # Reread the config file in case it's been manually edited
+        with open(kioskConfig, "r") as f:
+            # the pretty printer uses single quotes, JSON requires double quotes
+            single = f.read()
+            double = single.replace("'", '"')
+            kiosks = json.loads(double)
+
+        if ("changeRole" in q) and ("Scene" in q):
+            changingRole = q["changeRole"][0];
+            newScene = q["Scene"][0];
+            if (changingRole in kiosks["Roles"]) and (newScene in kiosks["Scenes"]):
+                print("Changing role '%r' to '%r'" % (changingRole, newScene))
+                kiosks["Roles"][changingRole] = newScene;
+            else:
+                print("Couldn't change Role %r to %r" % (changingRole, newScene))
         else:
-            print("Couldn't change Scene '%s' to '%s'" % (changingScene, URL))
-    else:
-        print('"changeScene" in q: %r "URL" in q: %r' % ("changeScene" in q, "URL" in q))
+            print('"changeRole" in q: %r "Scene" in q: %r' % ("changeRole" in q, "Scene" in q))
+        
+        if ("changeScene" in q) and ("URL" in q):
+            changingScene = q["changeScene"][0];
+            newURL = q["URL"][0].strip();
+            if changingScene in kiosks["Scenes"]:
+                print("Changing Scene %r to %r" % (changingScene, newURL))
+                kiosks["Scenes"][changingScene] = newURL;
+            else:
+                print("Couldn't change Scene '%s' to '%s'" % (changingScene, URL))
+        else:
+            print('"changeScene" in q: %r "URL" in q: %r' % ("changeScene" in q, "URL" in q))
 
-    with open(kioskConfig, "w") as f:
-        pprint.pp(kiosks, f)
+        with open(kioskConfig, "w") as f:
+            pprint.pp(kiosks, f)
 
-    #print("Serializing %r" % (kiosks))
-    ret = bytes(json.dumps(kiosks), "utf-8")
-
-    #print("ret: %r" % (ret))
-
-    # debugging - return environment with kiosks and the request uri
-    #ret["uri"] = wsgiref.util.request_uri(environ)
-    #ret["environ"] = {}
-    #for key, value in environ.items():
-    #    ret["environ"][key] = value.encode("utf-8")
+        #print("Serializing %r" % (kiosks))
+        ret = bytes(json.dumps(kiosks), "utf-8")
 
     status = '200 OK'  # HTTP Status Code and message
     #headers = [('Content-type', 'text/plain')]  # HTTP Response Headers
     headers = [('Content-type', 'application/json'),
                ('Content-Length', str(len(ret)))]  # HTTP Response Headers
     
-    # Call the start_response function to send headers
     start_response(status, headers)
-    
-    # Return an iterable of bytes representing the response body
-    # Always return the current kiosks
     return [ ret ]
 
 if __name__ == '__main__':

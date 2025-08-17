@@ -4,7 +4,7 @@
  */
 
 // Has to match the WSGI pass through in the nginx configuration
-const baseURL = "wsgi/kiosks";
+const baseURL = "wsgi/kiosks.html";
 
 let Kiosks = {};
 
