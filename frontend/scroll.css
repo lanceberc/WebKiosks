@@ -1,0 +1,53 @@
+
+:root {
+    --scroll-height: 1080px;
+    --scroll-time: 10s;
+}
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    width: 100vw;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+}
+
+#outer {
+  overflow: visible;
+  width: 100%;
+  height: var(--scroll-height);
+}
+  
+#inner {
+  height: 100%;
+  animation: var(--scroll-time) linear infinite scrolly;
+}
+
+#inner iframe {
+ display: block;
+ margin: 0 0 1px 0;
+}
+
+@keyframes scrolly {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-100%); }
+}
+
+html > body > div#outer > div #inner > iframe > html > body > div#v-content > div.fff {
+    display: none;
+}
+
+topFrame > html > body > div#v-content > .fff {
+    display: none;
+}
+
