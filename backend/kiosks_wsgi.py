@@ -9,6 +9,7 @@ import pprint
 import subprocess
 
 kioskConfig = "/home/stfyc/www/html/Kiosks.json"
+nodeRoot = "/home/stfyc/bin"
 
 port = 8000
 
@@ -51,7 +52,7 @@ def application(environ, start_response):
     if path.endswith("scrollprep.html"):
         url = parsed.query
         print("Getting height of %s" % (url));
-        result = subprocess.run(["node", "/home/stfyc/src/Results/getheight.js", url])
+        result = subprocess.run(["node", '%s/getheight.js' % (nodeRoot), url])
         ret = bytes(json.dumps("{}"), "utf-8");
         
     if path.endswith("kiosks.html"):

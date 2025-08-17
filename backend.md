@@ -10,22 +10,22 @@ It's pretty finicky - there are a lot of moving parts to get right:
 
 Add the `nginx` configuration block to `/etc/nginx/sites-available/default`
 
- **wsgi backend**
+**wsgi backend**
  
-`cp backend/Kiosks.json /var/www/html`
-(if needed) `mkdir ~/bin`
-`cp backend/kiosks_wsgi.* ~/bin`
-`chmod +x ~/bin/kiosks_wsgi.py`
-`sudo (cd /etc/systemd/sites-available; ln -s /home/stfyc/bin/kiosks_wsgi.service .)`
-`mkdir /var/www/html/Kiosks`
-`cp frontend/* /var/www/html/Kiosks`
+    cp backend/Kiosks.json /var/www/html
+    (if needed) `mkdir ~/bin
+    cp backend/kiosks_wsgi.* ~/bin
+    chmod +x ~/bin/kiosks_wsgi.py
+    sudo (cd /etc/systemd/sites-available; ln -s /home/stfyc/bin/kiosks_wsgi.service .)
+    mkdir /var/www/html/Kiosks
+    cp frontend/* /var/www/html/Kiosks
 
 **Daemon Restart**
 
-`sudo systemctl demon-reload`
-`sudo systemctl enable kiosks_wsgi`
-`systemctl start kiosks_wsgi`
-`sudo systemctl restart nginx`
+    sudo systemctl demon-reload
+    sudo systemctl enable kiosks_wsgi
+    systemctl start kiosks_wsgi
+    sudo systemctl restart nginx
  
 **Test**
 
@@ -67,16 +67,16 @@ The WSGI backend `kiosks_wsgi.py` should be copied to `~/bin` and made executabl
 To keep random users from reconfiguring the kiosks the frontend URL is in an access-controlled directory /var/www/html/Kiosks/. \
 Currently access control is auth_basic as specified in the nginx configuration. auth_basic uses simple username:password mapping stored in /etc/nginx/stfycusers.txt.
 
-`sudo apt-get install apache2-utils`
+    sudo apt-get install apache2-utils
 
 The password file is manipulated with `htpasswd`; typical use is
 
-`sudo htpasswd -c /etc/nginx/stfycusers.txt <user>`
+    sudo htpasswd -c /etc/nginx/stfycusers.txt <user>
 
 ## ** Configuring npm for puppeteer **
 
 To determine the frame height of a results page to implement scrolling we use
 *puppeteer*, a node.js module for orchestrating Chrome/Firefox DOM nodes.
 
-`sudo apt-get install npm`
-`(cd ~/bin; npm i puppeteer puppeteer-core)`
+    sudo apt-get install npm
+    (cd ~/bin; npm i puppeteer puppeteer-core)
