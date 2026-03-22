@@ -25,24 +25,28 @@ def kioskCheck():
         with open(kiosksURLConfig, 'r') as f:
             kiosksURL = f.read().rstrip() # trim trailing white space from role
     except:
+        print('kioskcheck: read %s failed - setting to "%s"' % (kiosksURLConfig, defaultConfigURL))
         kiosksURL = defaultConfigURL
 
     try:
         with open(kioskRole, 'r') as f:
             role = f.read().rstrip() # trim trailing white space from role
     except:
+        print('kioskcheck: read %s failed - setting to "Test"' % (kioskRole))
         role = "Test"
 
     try:
         with open(kioskCurrent, 'r') as f:
             currentURL = f.read().rstrip()
     except:
+        print('kioskcheck: read %s failed - setting to "%s"' % (kioskRole))
         currentURL = defaultURL;
 
     try:
         single = urllib.request.urlopen(kiosksURL).read().decode('utf-8')
     except urllib.error.URLError as e:
-        print(f"urllib error: {e}")
+        print(f"kioskcheck: urllib error: {e}")
+        print(f"kioskcheck: url: %s" % kiosksURL)
         return;
 
     double = single.replace("'", '"')
@@ -50,13 +54,18 @@ def kioskCheck():
 
     #pprint.pp(kiosks)
 
-    scene = kiosks["Roles"][role]
-    url = kiosks["Scenes"][scene]
-    urlString = "URL='%s'" % (url)
+    try:
+        scene = kiosks["Roles"][role]
+        url = kiosks["Scenes"][scene]
+        urlString = "URL='%s'" % (url)
+    except:
+        print("Error in Kiosk assignments role: %r scene: %r" % (role, scene))
+        urlString = defaultURL        
 
     if urlString != currentURL:
         # shoot firefox, let nanny restart it
         try:
+            print("kioskcheck new URL role: %r scene: %r URL: %r" % (role, scene, urlString))
             print("kioskcheck killing firefox")
             result = subprocess.run(['killall', 'firefox'], capture_output=True, text=True, check=True)
         except subprocess.CalledProcessError as e:
@@ -64,7 +73,6 @@ def kioskCheck():
 
         with open(kioskCurrent, 'w') as f:
             f.write(urlString)
-        print("kioskcheck new url %r" % (url))
         
 if __name__ == '__main__':
     while (True):
